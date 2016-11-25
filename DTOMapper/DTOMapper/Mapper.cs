@@ -25,23 +25,57 @@ namespace DTOMapper
             TDestination result = (TDestination)destType.GetConstructor(new Type[0]).Invoke(new object[0]);
             if (expressions.ContainsKey(key))
             {
-                var lambda = ((Expression<Func<TSource, TDestination>>)expressions[key]).Compile();
-                result = (TDestination)lambda(source);
+                var lambda = ((Expression<Func<TSource, TDestination, TDestination>>)expressions[key]).Compile();
+                result = (TDestination)lambda(source, result);
             }
             else
             {
-                Expression<Func<TSource, TDestination>> expr = BuildNewMapLambda<TSource, TDestination>();
+                Expression<Action<TSource, TDestination>> expr = 
+                    BuildNewMapLambda<TSource, TDestination>();
                 expressions[key] = expr;
-                result = expr.Compile()(source);
+                expr.Compile()(source, result);
             }
             return result;
         }
 
-        private Expression<Func<TSource, TDestination>> BuildNewMapLambda<TSource, TDestination>()
+        private Expression<Action<TSource, TDestination>> BuildNewMapLambda<TSource, TDestination>()
         {
-            Expression<Func<TSource, TDestination>> result = null;
-            
+            Type sourceType = typeof(TSource);
+            Type destinationType = typeof(TDestination);
+            List<Expression> exprList = new List<Expression>();
+
+            ParameterExpression sourceParameter = Expression.Parameter(typeof(TSource), "source");
+            ParameterExpression destinationParameter = Expression.Parameter(typeof(TDestination), "destination");
+            Expression assignExpression = null;
+
+            foreach (PropertyInfo destinationProperty in destinationType.GetProperties())
+            {
+                if (destinationProperty.CanWrite)
+                {
+                    foreach (PropertyInfo sourceProperty in sourceType.GetProperties())
+                    {
+                        if(CanMap(sourceProperty, destinationProperty)){
+                            Expression getSourcePropertyValueExpression = Expression.Property(sourceParameter, sourceProperty);
+                            Expression getDestinationPropertyExpression = Expression.Property(destinationParameter, destinationProperty);
+                            assignExpression = Expression.Assign(getDestinationPropertyExpression, getSourcePropertyValueExpression);
+                            exprList.Add(assignExpression);
+                        }
+                    }
+                }
+            }
+
+            Expression body = Expression.Block(exprList);
+
+            Expression<Action<TSource, TDestination>> result = 
+                Expression.Lambda<Action<TSource, TDestination>>(body, sourceParameter, destinationParameter);
+
             return result;
+        }
+
+        private bool CanMap(PropertyInfo sourceProperty, PropertyInfo destinationProperty)
+        {
+            return (sourceProperty.Name == destinationProperty.Name) 
+                && (sourceProperty.PropertyType == destinationProperty.PropertyType);
         }
     }
 }
