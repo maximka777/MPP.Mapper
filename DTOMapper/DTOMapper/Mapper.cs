@@ -10,6 +10,17 @@ namespace DTOMapper
 {
     public class Mapper : IMapper
     {
+        private static readonly Mapper instance = new Mapper();
+
+        public static Mapper Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
+
+
         private Dictionary<SourceDestinationTypesPair, Expression> expressions = 
             new Dictionary<SourceDestinationTypesPair, Expression>();
 
@@ -42,11 +53,11 @@ namespace DTOMapper
         {
             Type sourceType = typeof(TSource);
             Type destinationType = typeof(TDestination);
-            List<Expression> exprList = new List<Expression>();
 
+            List<Expression> exprList = new List<Expression>();
             ParameterExpression sourceParameter = Expression.Parameter(typeof(TSource), "source");
             ParameterExpression destinationParameter = Expression.Parameter(typeof(TDestination), "destination");
-            Expression assignExpression = null;
+            Expression assignPropertiesExpression = null;
 
             foreach (PropertyInfo destinationProperty in destinationType.GetProperties())
             {
@@ -57,8 +68,8 @@ namespace DTOMapper
                         if(CanMap(sourceProperty, destinationProperty)){
                             Expression getSourcePropertyValueExpression = Expression.Property(sourceParameter, sourceProperty);
                             Expression getDestinationPropertyExpression = Expression.Property(destinationParameter, destinationProperty);
-                            assignExpression = Expression.Assign(getDestinationPropertyExpression, getSourcePropertyValueExpression);
-                            exprList.Add(assignExpression);
+                            assignPropertiesExpression = Expression.Assign(getDestinationPropertyExpression, getSourcePropertyValueExpression);
+                            exprList.Add(assignPropertiesExpression);
                         }
                     }
                 }
@@ -75,7 +86,12 @@ namespace DTOMapper
         private bool CanMap(PropertyInfo sourceProperty, PropertyInfo destinationProperty)
         {
             return (sourceProperty.Name == destinationProperty.Name) 
-                && (sourceProperty.PropertyType == destinationProperty.PropertyType);
+                && (IsCompatibleTypes(sourceProperty.PropertyType, destinationProperty.PropertyType));
+        }
+
+        private bool IsCompatibleTypes(Type sourceType, Type destinationType)
+        {
+            return sourceType.FullName == destinationType.FullName;
         }
     }
 }
