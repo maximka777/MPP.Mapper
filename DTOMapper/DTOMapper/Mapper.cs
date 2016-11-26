@@ -20,9 +20,9 @@ namespace DTOMapper
             }
         }
 
-
         private Dictionary<SourceDestinationTypesPair, Expression> expressions = 
             new Dictionary<SourceDestinationTypesPair, Expression>();
+        private TypeCompatibilityChecker checker = new TypeCompatibilityChecker();
 
         public TDestination Map<TSource, TDestination>(TSource source) where TDestination : new()
         {
@@ -86,12 +86,7 @@ namespace DTOMapper
         private bool CanMap(PropertyInfo sourceProperty, PropertyInfo destinationProperty)
         {
             return (sourceProperty.Name == destinationProperty.Name) 
-                && (IsCompatibleTypes(sourceProperty.PropertyType, destinationProperty.PropertyType));
-        }
-
-        private bool IsCompatibleTypes(Type sourceType, Type destinationType)
-        {
-            return sourceType.FullName == destinationType.FullName;
+                && (checker.IsCompatible(sourceProperty.PropertyType, destinationProperty.PropertyType));
         }
     }
 }
