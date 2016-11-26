@@ -10,7 +10,7 @@ namespace MapperConsoleUser
     {
         public int Age { get; set; }
         public string Name { get; set; }
-        public float Weight { get; set; }
+        public double Weight { get; set; }
         public bool Man { get; set; }
 
         public override string ToString()

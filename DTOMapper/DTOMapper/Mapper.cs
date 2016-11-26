@@ -20,8 +20,8 @@ namespace DTOMapper
             }
         }
 
-        private Dictionary<SourceDestinationTypesPair, Expression> expressions = 
-            new Dictionary<SourceDestinationTypesPair, Expression>();
+        private Dictionary<SourceDestinationTypesPair, Delegate> expressions = 
+            new Dictionary<SourceDestinationTypesPair, Delegate>();
         private TypeCompatibilityChecker checker = new TypeCompatibilityChecker();
 
         public TDestination Map<TSource, TDestination>(TSource source) where TDestination : new()
@@ -36,15 +36,16 @@ namespace DTOMapper
             TDestination result = (TDestination)destType.GetConstructor(new Type[0]).Invoke(new object[0]);
             if (expressions.ContainsKey(key))
             {
-                var lambda = ((Expression<Func<TSource, TDestination, TDestination>>)expressions[key]).Compile();
-                result = (TDestination)lambda(source, result);
+                var lambda = expressions[key];
+                ((Action<TSource, TDestination>)lambda)(source, result);
             }
             else
             {
                 Expression<Action<TSource, TDestination>> expr = 
                     BuildNewMapLambda<TSource, TDestination>();
-                expressions[key] = expr;
-                expr.Compile()(source, result);
+                var lambda = expr.Compile();
+                expressions[key] = lambda;
+                lambda(source, result);
             }
             return result;
         }

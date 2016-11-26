@@ -51,21 +51,21 @@ namespace DTOMapper
             {
                 if ((signedTypes.Contains(source)) && (signedTypes.Contains(destination)))
                 {
-                    if(signedTypes.IndexOf(source) <= signedTypes.IndexOf(destination))
+                    if(signedTypes.IndexOf(source) >= signedTypes.IndexOf(destination))
                     {
                         result = true;
                     }
                 }
                 else if ((unsignedTypes.Contains(source)) && (unsignedTypes.Contains(destination)))
                 {
-                    if (unsignedTypes.IndexOf(source) <= unsignedTypes.IndexOf(destination))
+                    if (unsignedTypes.IndexOf(source) >= unsignedTypes.IndexOf(destination))
                     {
                         result = true;
                     }
                 }
                 else if ((realTypes.Contains(source)) && (realTypes.Contains(destination)))
                 {
-                    if (realTypes.IndexOf(source) <= realTypes.IndexOf(destination))
+                    if (realTypes.IndexOf(source) >= realTypes.IndexOf(destination))
                     {
                         result = true;
                     }

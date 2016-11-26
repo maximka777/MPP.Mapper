@@ -22,8 +22,11 @@ namespace MapperConsoleUser
 
             Mapper mapper = new Mapper();
             TestDestination dest = mapper.Map<TestSource, TestDestination>(source);
-
             Console.WriteLine(dest);
+
+            TestDestination dest1 = mapper.Map<TestSource, TestDestination>(source);
+            Console.WriteLine(dest1);
+
             Console.Read();
         }
     }
