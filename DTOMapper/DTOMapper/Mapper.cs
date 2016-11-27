@@ -76,8 +76,15 @@ namespace DTOMapper
                 }
             }
 
-            Expression body = Expression.Block(exprList);
-
+            Expression body = null;
+            if (exprList.Count != 0)
+            {
+                body = Expression.Block(exprList);
+            }
+            else
+            {
+                body = Expression.Empty();
+            }
             Expression<Action<TSource, TDestination>> result = 
                 Expression.Lambda<Action<TSource, TDestination>>(body, sourceParameter, destinationParameter);
 

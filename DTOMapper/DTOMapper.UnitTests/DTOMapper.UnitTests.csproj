@@ -60,6 +60,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassesWithCompatibleTypesAndPropertiesNames\Destination.cs" />
+    <Compile Include="ClassesWithCompatibleTypesAndPropertiesNames\Source.cs" />
+    <Compile Include="ClassesWithNotIdentificPropertiesNamesAndTypes\Destination1.cs" />
+    <Compile Include="ClassesWithNotIdentificPropertiesNamesAndTypes\Source1.cs" />
     <Compile Include="MapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
