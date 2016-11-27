@@ -69,7 +69,7 @@ namespace DTOMapper
                         if(CanMap(sourceProperty, destinationProperty)){
                             Expression getSourcePropertyValueExpression = Expression.Property(sourceParameter, sourceProperty);
                             Expression getDestinationPropertyExpression = Expression.Property(destinationParameter, destinationProperty);
-                            assignPropertiesExpression = Expression.Assign(getDestinationPropertyExpression, getSourcePropertyValueExpression);
+                            assignPropertiesExpression = Expression.Assign(getDestinationPropertyExpression, Expression.Convert(getSourcePropertyValueExpression, destinationProperty.PropertyType));
                             exprList.Add(assignPropertiesExpression);
                         }
                     }

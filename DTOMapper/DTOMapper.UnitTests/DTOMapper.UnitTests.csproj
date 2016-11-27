@@ -64,6 +64,8 @@
     <Compile Include="ClassesWithCompatibleTypesAndPropertiesNames\Source.cs" />
     <Compile Include="ClassesWithNotIdentificPropertiesNamesAndTypes\Destination1.cs" />
     <Compile Include="ClassesWithNotIdentificPropertiesNamesAndTypes\Source1.cs" />
+    <Compile Include="ClassesWithNumberTypes\Destination2.cs" />
+    <Compile Include="ClassesWithNumberTypes\Source2.cs" />
     <Compile Include="MapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
